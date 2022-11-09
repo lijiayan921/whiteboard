@@ -133,7 +133,7 @@ export class BaseBoard {
 
       // 清空鼠标移动时保存的临时绘图对象
       this.drawingObject = null
-      let obj = { pageId: 0, seqData: JSON.stringify(this.canvas.toJSON()) }
+      let obj = { pageId: 0, seqData: JSON.stringify(e.target?.toJSON()) }
       let sendObj = JSON.stringify(obj)
       this.ws.current?.send(sendObj)
       if (this.isDrawing) {
@@ -305,12 +305,13 @@ export class BaseBoard {
     // 计算矩形长宽
     let left = this.mouseFrom.x
     let top = this.mouseFrom.y
+    let width = this.mouseTo.x - this.mouseFrom.x
     let height = this.mouseTo.y - this.mouseFrom.y
     this.canvasObject = new fabric.Rect({
       left: left,
       top: top,
-      width: height,
-      height: height,
+      width: width,
+      height: width,
       stroke: this.strokeColor,
       fill: this.fillColor,
       strokeWidth: this.lineSize,

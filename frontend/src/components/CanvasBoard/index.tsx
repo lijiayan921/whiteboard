@@ -39,6 +39,10 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
         const data = JSON.parse(e.data)
         console.log('接收到的数据是', data)
         console.log('llll', data.data.seqData)
+        const canvasInitData: any = canvas.current!.canvas.toJSON()
+        console.log('画布初始数据', canvasInitData.objects)
+        const finalCanvasData = canvasInitData.objects.push(data.data.seqData)
+        console.log('最终数据', canvasInitData)
 
         // 有两种情况，type=1,得到最开始的历史记录  type=2,有人修改后传递过来的数据
         let canvasData
