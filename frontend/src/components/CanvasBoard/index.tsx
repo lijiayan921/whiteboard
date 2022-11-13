@@ -68,6 +68,7 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
     if (ws.current) {
       ws.current.onmessage = (e) => {
         const data = JSON.parse(e.data)
+        console.log('data', data)
 
         switch (data.type) {
           case 1:
@@ -85,7 +86,6 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
             break
           case 2:
             receieveFullArr.current.splice(data.data.pageId, data.data.pageId, data.data.seqData)
-
             break
           case 4:
             data.isOwner
@@ -112,15 +112,17 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
               content: `用户${data.data.user}${data.data.inOrOut == 1 ? '进入' : '离开'}了白板`,
               duration: 2000,
             })
-
             setCurUserList(data.data.users)
             break
           default:
             break
         }
         setBoardUpdate(true)
+        console.log('boardUpdate', boardUpdate)
       }
     }
+    console.log('组件重新挂载', boardUpdate)
+
     return () => {
       receieveFullArr.current = []
       receiveArr.current = []
@@ -166,6 +168,9 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
    * @des 渲染数据生成画布
    */
   useEffect(() => {
+    console.log('重新渲染了', BaseBoardArr.current)
+    console.log('当前u', boardUpdate)
+
     BaseBoardArr.current.map((item, index) => {
       item.canvas.loadFromJSON(receieveFullArr.current[index], () => {
         item.canvas.renderAll()
@@ -174,7 +179,7 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
       })
     })
     setBoardUpdate(false)
-  }, [boardUpdate])
+  }, [boardUpdate, pageID])
 
   /**
    * @des 监听是否选中当前图形
