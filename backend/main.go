@@ -2,32 +2,37 @@ package main
 
 import (
 	"log"
+	"whiteboard/dao/mongodb"
 	"whiteboard/dao/mysql"
 	"whiteboard/dao/redis"
+	"whiteboard/middleware/rabbitmq"
 	"whiteboard/router"
 	"whiteboard/setting"
+	"whiteboard/utils/validator"
 )
 
-func main() {
-	//mysql.DB.AutoMigrate(&User{})
-	//mysql.DB.Create(&User{
-	//	Name: "test1",
-	//	Pwd:  "test1",
-	//})
-	//var user User
-	//mysql.DB.First(&user, 1)
-	//fmt.Printf(user.Name)
-
-	//初始化MySQL数据库
+func init() {
 	err := setting.Init()
 	if err != nil {
 		log.Panicln("配置文件错误:", err)
 	}
+	//Init MySQL
 	mysql.Init(setting.Conf.MySQLConfig)
+	//Init Redis
 	redis.Init(setting.Conf.RedisConfig)
+	//Init RabbitMQ
+	rabbitmq.Init(setting.Conf.RabbitMQConfig)
+	//Init MongoDB
+	mongodb.Init(setting.Conf.MongoDBConfig)
+	//Init Validate
+	validator.Init()
+}
 
-	// 注册路由
+func main() {
+	// Register Route
 	r := router.SetupRouter()
-	r.Run(":8080")
+	// performance test
+	//pprof.Register(r)
 
+	r.Run(":8080")
 }

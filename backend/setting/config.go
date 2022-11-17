@@ -10,14 +10,16 @@ import (
 //命名的时候注意统一用驼命名法
 
 //tag字段统一小写加下划线分割
-type FileServerConfig struct {
-	MachineID    int64  `mapstructure:"machine_id" `
-	Port         int    `mapstructure:"port"`
-	StartTime    string `mapstructure:"start_time"`
-	*MySQLConfig `mapstructure:"mysql"`
-	*RedisConfig `mapstructure:"redis"`
-	*AESConfig   `mapstructure:"aes"`
-	*TokenConfig `mapstructure:"token"`
+type WhiteBoardConfig struct {
+	MachineID       int64  `mapstructure:"machine_id" `
+	Port            int    `mapstructure:"port"`
+	StartTime       string `mapstructure:"start_time"`
+	*MySQLConfig    `mapstructure:"mysql"`
+	*RedisConfig    `mapstructure:"redis"`
+	*AESConfig      `mapstructure:"aes"`
+	*TokenConfig    `mapstructure:"token"`
+	*RabbitMQConfig `mapstructure:"rabbitMQ"`
+	*MongoDBConfig  `mapstructure:"mongoDB"`
 }
 
 type MySQLConfig struct {
@@ -28,6 +30,15 @@ type MySQLConfig struct {
 	DbName      string `mapstructure:"db_name"`
 	MaxOpenConn int    `mapstructure:"max_open_conn"`
 	MaxIdleConn int    `mapstructure:"max_idle_conn"`
+}
+
+type MongoDBConfig struct {
+	Host        string `mapstructure:"host"`
+	Port        int    `mapstructure:"port"`
+	MaxOpenConn int    `mapstructure:"max_open_conn"`
+	MaxIdleConn int    `mapstructure:"max_idle_conn"`
+	DBName      string `mapstructure:"dbname"`
+	TimeOut     int    `mapstructure:"timeout"`
 }
 
 type RedisConfig struct {
@@ -46,14 +57,20 @@ type TokenConfig struct {
 	Issuer string `mapstructure:"issuer"`
 }
 
-var Conf = new(FileServerConfig)
+type RabbitMQConfig struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Root     string `mapstructure:"root"`
+	Password string `mapstructure:"password"`
+}
+
+var Conf = new(WhiteBoardConfig)
 
 func Init() (err error) {
-	viper.SetConfigName("config")    //配置文件名
-	viper.AddConfigPath("./setting") //配置文件的相对路径
+	viper.SetConfigName("config")    //Config filename
+	viper.AddConfigPath("./setting") //Relative path to the configuration file
 	viper.SetConfigType("yaml")
-	if err = viper.ReadInConfig(); err != nil { //读取配置文件
-		//日志信息统一用内置log输出 格式 包名-方法名-failed err:
+	if err = viper.ReadInConfig(); err != nil { //Reading configuration files
 		log.Println("viper ReadInConfig failed,err:", err)
 		return
 	}

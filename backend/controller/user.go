@@ -2,37 +2,52 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"whiteboard/model"
 	"whiteboard/service"
 	"whiteboard/utils/jwt"
 	"whiteboard/utils/res"
+	"whiteboard/utils/validator"
 )
 
 func Register(c *gin.Context) {
+	// Get user info
 	name := c.PostForm("name")
 	pwd := c.PostForm("pwd")
-	err := service.Register(name, pwd)
+	err := validator.Validate.Struct(&model.User{Name: name, Pwd: pwd})
 	if err != nil {
-		res.Ok(c, 400, "注册失败, 账号已注册", nil)
+		res.Fail(c, 400, "Registration failed The user name or password is empty", nil)
 		return
 	}
-	res.Ok(c, 200, "注册成功", nil)
+
+	// Register user
+	err = service.Register(name, pwd)
+	if err != nil {
+		res.Fail(c, 400, "Registration failed Account has been registered", nil)
+		return
+	}
+	res.Ok(c, 200, "registered successfully", nil)
 }
 
 func Login(c *gin.Context) {
+	// // Get user info
 	name := c.PostForm("name")
 	pwd := c.PostForm("pwd")
-	user, err := service.GetUserByName(name)
+	err := validator.Validate.Struct(&model.User{Name: name, Pwd: pwd})
 	if err != nil {
-		res.Ok(c, 400, "用户不存在", nil)
+		res.Ok(c, 400, "Registration failed The user name or password is empty", nil)
 		return
 	}
-	if user == nil || user.Pwd != pwd {
-		res.Ok(c, 400, "账号或密码错误", nil)
+
+	// Verify the username and password
+	user, err := service.GetUserByNamePwd(name, pwd)
+	if err != nil {
+		res.Ok(c, 400, "Incorrect username or password", nil)
 		return
 	}
+
+	// Generate token
 	token, _ := jwt.GenToken(user.Id, user.Name)
-	res.Ok(c, 200, "登录成功", gin.H{
+	res.Ok(c, 200, "login successfully", gin.H{
 		"token": token,
 	})
-
 }

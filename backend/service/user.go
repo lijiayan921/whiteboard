@@ -12,9 +12,9 @@ func Register(name string, pwd string) error {
 		mysql.CreateUser(name, pwd)
 		return nil
 	}
-	return errors.New("用户已存在")
+	return errors.New("user already exists")
 }
 
-func GetUserByName(name string) (*model.User, error) {
-	return mysql.GetUserByName(name)
+func GetUserByNamePwd(name, pwd string) (*model.User, error) {
+	return mysql.GetUserByNamePwd(name, pwd)
 }
