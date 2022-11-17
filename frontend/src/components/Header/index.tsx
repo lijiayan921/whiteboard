@@ -98,7 +98,7 @@ const Header: FC<HeaderProps> = (props) => {
             </div>
           )}
 
-          {canvasBoardRef && !boardMode && (
+          {canvasBoardRef && (
             <Pagination
               total={canvasBoardRef.childNodes.length}
               pageSize={1}
