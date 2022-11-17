@@ -228,6 +228,7 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
       isUpdate(false)
     }, 500)
   }
+
   const canvasBoardRef = useRef<HTMLDivElement | null>(null)
 
   return (
