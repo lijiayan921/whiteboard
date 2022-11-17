@@ -44,6 +44,21 @@ const Header: FC<HeaderProps> = (props) => {
     handleSwitchPage(index.current)
   }
   /**
+   * @des 处理分页
+   * @param page
+   */
+
+  function handleSwitchPage(page: number) {
+    setCurPage(page)
+    canvasBoardRef.style.left = `-${window.innerWidth * (page - 1)}px`
+    baseBoardArr.map((item, index) => {
+      if (page == index + 1) {
+        canvas.current = item
+        currentCanvas()
+      }
+    })
+  }
+  /**
    * @des 解散白板
    */
 
@@ -57,17 +72,6 @@ const Header: FC<HeaderProps> = (props) => {
     }
   }
 
-  function handleSwitchPage(page: number) {
-    setCurPage(page)
-
-    canvasBoardRef.style.left = `-${window.innerWidth * (page - 1)}px`
-    baseBoardArr.map((item, index) => {
-      if (page == index + 1) {
-        canvas.current = item
-        currentCanvas()
-      }
-    })
-  }
   const [isReadOnly, setIsReadOnly] = useState(false)
   async function handleMode(e: any, mode: number) {
     let formData = new FormData()

@@ -47,27 +47,14 @@ const SelectBar: FC<SelectBarProps> = (props) => {
     const card = canvas
     card.isRedoing = true
     let stateIdx = card.stateIdx + flag
-
-    if (
-      undoRef.current!.classList.contains(styles['no-undo-redo']) ||
-      redoRef.current!.classList.contains(styles['no-undo-redo'])
-    ) {
-      undoRef.current!.classList.remove(styles['no-undo-redo'])
-      redoRef.current!.classList.remove(styles['no-undo-redo'])
-    }
-    // 判断是否已经到了第一步操作
     if (stateIdx < 0) {
       undoRef.current!.classList.add(styles['no-undo-redo'])
-
       return
     }
-    // 判断是否已经到了最后一步操作
     if (stateIdx >= card.stateArr.length) {
       redoRef.current!.classList.add(styles['no-undo-redo'])
-
       return
     }
-
     if (card.stateArr[stateIdx]) {
       e.target.classList.remove(styles['no-undo-redo'])
       card.canvas.loadFromJSON(card.stateArr[stateIdx], () => {

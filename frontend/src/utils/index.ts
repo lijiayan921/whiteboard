@@ -25,7 +25,7 @@ export class BaseBoard {
   selectedObj: fabric.Object[] | null
   curObj: {}
   id: number | undefined
-
+  //...类型注释
   constructor(props: BaseBoardProp) {
     this.type = props.type
     this.ws = props.ws
@@ -60,16 +60,12 @@ export class BaseBoard {
         width: window.innerWidth,
         height: window.innerHeight,
       })
-      // 禁止用户进行组选择
       this.canvas.selection = false
-      // 设置当前鼠标停留在
       this.canvas.hoverCursor = 'default'
-      // // 重新渲染画布
       this.canvas.renderAll()
       this.stateIdx = 0
     }
   }
-
   initCanvasEvent() {
     this.canvas.on('mouse:down', (options) => {
       if (this.selectedObj) {
@@ -170,7 +166,6 @@ export class BaseBoard {
     this.canvas.freeDrawingBrush.color = this.strokeColor
     this.canvas.freeDrawingBrush.width = this.lineSize
   }
-  // 初始化文本工具
   initText() {
     if (!this.textObject) {
       // 当前不存在绘制中的文本对象
@@ -301,7 +296,6 @@ export class BaseBoard {
     })
     this.drawingGraph(canvasObject)
   }
-  // 菱形
   initRhombus() {
     // 计算矩形长宽
     let left = this.mouseFrom.x
@@ -321,7 +315,6 @@ export class BaseBoard {
     })
     this.drawingGraph(this.canvasObject)
   }
-
   drawingGraph(canvasObject: any) {
     canvasObject.selectable = true
     // 如果当前图形已绘制，清除上一次绘制的图形
@@ -331,7 +324,6 @@ export class BaseBoard {
     this.canvas.add(canvasObject)
     this.drawingObject = canvasObject
   }
-  // 删除当前选中图层对象
   deleteSelectObj() {
     this.selectedObj &&
       this.selectedObj.map((item) => {
@@ -341,7 +333,6 @@ export class BaseBoard {
         this.ws.current?.send(sendObj)
       })
   }
-  // 清屏
   clearCanvas() {
     let children = this.canvas.getObjects()
     if (children.length > 0) {

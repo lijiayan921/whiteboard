@@ -103,6 +103,7 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
             setPageId(data.data.pageId)
             break
           case 6:
+            canvas.current!.canvas.isDrawingMode = false
             setBoardMode(data.data.newMode)
             break
           case 7:
@@ -111,6 +112,9 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
               duration: 2000,
             })
             setCurUserList(data.data.users)
+            break
+          case 8:
+            Message.error('现在是只读模式，不能对白板进行修改')
             break
           default:
             break
@@ -178,19 +182,16 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
   /**
    * @des 监听是否选中当前图形
    */
-
   useEffect(() => {
     // 监听选中对象
     const board = canvas.current!
-    // const board = canvas.current!
     board.canvas.on('selection:created', (e) => {
       if (e.selected!.length == 1) {
         setIsSelect(true)
       } else {
         board.canvas.selection = false
       }
-
-      // // 选中图层事件触发时，动态更新赋值
+      // 选中图层事件触发时，动态更新赋值
       board.selectedObj = e.selected!
       document.onkeydown = (e) => {
         if (e.key == 'Backspace' && board.selectTool !== 'text') {
@@ -198,7 +199,6 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
         }
       }
     })
-
     board.canvas.on('selection:updated', (e) => {
       if (e.selected!.length == 1) {
         setIsSelect(true)
@@ -210,7 +210,6 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
         }
       }
     })
-
     board.canvas.on('selection:cleared', (e) => {
       setIsSelect(false)
       board.selectedObj = null
