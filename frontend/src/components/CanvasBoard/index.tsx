@@ -68,8 +68,6 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
     if (ws.current) {
       ws.current.onmessage = (e) => {
         const data = JSON.parse(e.data)
-        console.log('data', data)
-
         switch (data.type) {
           case 1:
             data.data.history.map((item: string, index: number) => {
@@ -85,7 +83,7 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
             setBoardMode(data.data.boardMode)
             break
           case 2:
-            receieveFullArr.current.splice(data.data.pageId, data.data.pageId, data.data.seqData)
+            receieveFullArr.current.splice(data.data.pageId, 1, data.data.seqData)
             break
           case 4:
             data.isOwner
@@ -118,10 +116,8 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
             break
         }
         setBoardUpdate(true)
-        console.log('boardUpdate', boardUpdate)
       }
     }
-    console.log('组件重新挂载', boardUpdate)
 
     return () => {
       receieveFullArr.current = []
@@ -131,6 +127,7 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
   /**
    * @des 初始化白板类
    */
+
   useEffect(() => {
     canvas.current = new BaseBoard({ type, curTools: 'select', ws })
     BaseBoardArr.current.push(canvas.current)
@@ -168,9 +165,6 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
    * @des 渲染数据生成画布
    */
   useEffect(() => {
-    console.log('重新渲染了', BaseBoardArr.current)
-    console.log('当前u', boardUpdate)
-
     BaseBoardArr.current.map((item, index) => {
       item.canvas.loadFromJSON(receieveFullArr.current[index], () => {
         item.canvas.renderAll()
@@ -179,7 +173,7 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
       })
     })
     setBoardUpdate(false)
-  }, [boardUpdate, pageID])
+  }, [boardUpdate])
 
   /**
    * @des 监听是否选中当前图形
@@ -233,9 +227,6 @@ const CanvasBoard: FC<CanvasBoardProps> = (props) => {
     const x = setTimeout(() => {
       isUpdate(false)
     }, 500)
-    return () => {
-      clearTimeout(x)
-    }
   }
   const canvasBoardRef = useRef<HTMLDivElement | null>(null)
 
